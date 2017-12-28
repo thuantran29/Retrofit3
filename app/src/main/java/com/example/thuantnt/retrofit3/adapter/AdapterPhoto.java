@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.thuantnt.retrofit3.R;
-import com.example.thuantnt.retrofit3.models.Photo;
+import com.example.thuantnt.retrofit3.models.Photo_;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -21,9 +21,9 @@ public class AdapterPhoto extends RecyclerView.Adapter<AdapterPhoto.ViewHolder> 
 
     private Context mContext;
     private LayoutInflater inflater;
-    private List<Photo> arrayPhoto;
+    private List<Photo_> arrayPhoto;
 
-    public AdapterPhoto(Context mContext, List<Photo> arrayPhoto) {
+    public AdapterPhoto(Context mContext, List<Photo_> arrayPhoto) {
         this.mContext = mContext;
         inflater = LayoutInflater.from(mContext);
         this.arrayPhoto = arrayPhoto;

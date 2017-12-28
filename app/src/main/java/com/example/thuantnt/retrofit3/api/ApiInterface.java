@@ -1,6 +1,6 @@
 package com.example.thuantnt.retrofit3.api;
 
-import com.example.thuantnt.retrofit3.models.PhotoResponse;
+import com.example.thuantnt.retrofit3.models.Photo;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -15,10 +15,10 @@ import retrofit2.http.Query;
 public interface ApiInterface {
 
     @GET("photos")
-    Call<PhotoResponse> getPhotos(@Query("feature") String feature,
-                                  @Query("page") int page,
-                                  @Query("consumer_key") String apiKey);
+    Call<Photo> getPhotos(@Query("feature") String feature,
+                          @Query("page") int page,
+                          @Query("consumer_key") String apiKey);
 
     @GET("photos?feature=popular&page=1&")
-    Call<PhotoResponse> getPhotoResponse(@Query("consumer_key") String apiKey);
+    Call<Photo> getPhotoResponse(@Query("consumer_key") String apiKey);
 }

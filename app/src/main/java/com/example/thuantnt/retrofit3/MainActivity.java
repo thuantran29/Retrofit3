@@ -12,7 +12,7 @@ import com.example.thuantnt.retrofit3.adapter.AdapterPhoto;
 import com.example.thuantnt.retrofit3.api.ApiClient;
 import com.example.thuantnt.retrofit3.api.ApiInterface;
 import com.example.thuantnt.retrofit3.models.Photo;
-import com.example.thuantnt.retrofit3.models.PhotoResponse;
+import com.example.thuantnt.retrofit3.models.Photo_;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private int page = 1;
 
     private AdapterPhoto adapter;
-    private List<Photo> photos;
+    private List<Photo_> photos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +62,10 @@ public class MainActivity extends AppCompatActivity {
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
 
-//        Call<PhotoResponse> call = apiService.getPhotos(feature, page, API_KEY);
-        Call<PhotoResponse> call = apiService.getPhotos(feature, page, API_KEY);
-        call.enqueue(new Callback<PhotoResponse>() {
+        Call<Photo> call = apiService.getPhotos(feature, page, API_KEY);
+        call.enqueue(new Callback<Photo>() {
             @Override
-            public void onResponse(Call<PhotoResponse> call, Response<PhotoResponse> response) {
+            public void onResponse(Call<Photo> call, Response<Photo> response) {
                 Log.d(TAG, "onResponse: " + response.toString());
                 int statusCode = response.code();
                 photos = response.body().getPhotos();
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<PhotoResponse> call, Throwable t) {
+            public void onFailure(Call<Photo> call, Throwable t) {
                 // Log error here since request failed
                 Log.e(TAG, t.toString());
             }
