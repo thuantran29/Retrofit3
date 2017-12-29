@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.example.thuantnt.retrofit3.adapter.AdapterPhoto;
 import com.example.thuantnt.retrofit3.api.ApiClient;
 import com.example.thuantnt.retrofit3.api.ApiInterface;
+import com.example.thuantnt.retrofit3.listener.EndlessRecyclerViewScrollListener;
 import com.example.thuantnt.retrofit3.models.Photo;
 import com.example.thuantnt.retrofit3.models.Photo_;
 
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AdapterPhoto adapter;
     private List<Photo_> photos;
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,20 +47,31 @@ public class MainActivity extends AppCompatActivity {
         if (API_KEY.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Add your APi", Toast.LENGTH_LONG).show();
             return;
+        } else {
+            getData(feature, page, API_KEY);
         }
-        photos = new ArrayList<>();
-        adapter = new AdapterPhoto(MainActivity.this, photos);
-        getData();
-        RecyclerView.LayoutManager managerLayout = new GridLayoutManager(getApplicationContext(), 2);
-        recyclerView.setLayoutManager(managerLayout);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
+
+        //Scrollview
+        scrollListener = new EndlessRecyclerViewScrollListener((GridLayoutManager) new GridLayoutManager(getApplicationContext(), 2)) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                loadMoreData(page);
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        recyclerView.addOnScrollListener(scrollListener);
 
 
     }
 
-    private void getData() {
+    // loadMoreData
+    private void loadMoreData(int offset) {
+        getData(feature, page++, API_KEY);
+        adapter.notifyDataSetChanged();
+        scrollListener.resetState();
+    }
+
+    private void getData(String feature, int page, String API_KEY) {
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
 
@@ -68,8 +81,14 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<Photo> call, Response<Photo> response) {
                 Log.d(TAG, "onResponse: " + response.toString());
                 int statusCode = response.code();
+                photos = new ArrayList<>();
                 photos = response.body().getPhotos();
-                Toast.makeText(MainActivity.this, "Lenght " + response, Toast.LENGTH_LONG).show();
+                adapter = new AdapterPhoto(MainActivity.this, photos);
+                RecyclerView.LayoutManager managerLayout = new GridLayoutManager(getApplicationContext(), 2);
+                recyclerView.setLayoutManager(managerLayout);
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                recyclerView.setAdapter(adapter);
             }
 
             @Override
@@ -79,4 +98,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }
